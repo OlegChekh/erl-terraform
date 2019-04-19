@@ -1,0 +1,5 @@
+columnA, columnB, columnC, columnD, columnE
+tripA, 0, tile1, 12, 12
+tripA, 1, tile21, 13, 13
+tripB, 0, tile1, -12, -12
+tripB, 1, tile21, -13, -13
