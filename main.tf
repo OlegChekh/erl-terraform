@@ -10,8 +10,12 @@ provider "aws" {
 }
 
 locals {
-  fixture=csvdecode(replace(var.fixture,", ",","))
+  fixture=csvdecode(replace(file("fixture"),", ",","))
   definition=jsondecode(file("definition.json"))
+}
+
+data "external" "fixture" {
+  program=["python", "fixture.py"]
 }
 
 module "dynamodb_table" {
@@ -25,21 +29,28 @@ module "dynamodb_table" {
 }
 
 output "fixture" {
-  value = "${local.fixture}"
+  value = "${data.external.fixture.result[keys(local.fixture[0])[0]]}"
+}
+output "temp" {
+  value = "${keys(local.fixture[0])[0]}"
+}
+output "temp1" {
+  value = "${local.fixture[0][keys(local.fixture[0])[0]]}"
 }
 
-# resource "aws_dynamodb_table_item" "CodingTask_items" {
-#   count = length(local.fixture)
-#   table_name = "${module.dynamodb_table.tableName}"
-#   hash_key   = "${module.dynamodb_table.hashKey}"
-#   range_key  = "${module.dynamodb_table.rangeKey}"
-#   item = <<ITEM
-# {
-#   "columnA":"${local.fixture[count.index].columnA}",
-#   "columnB":"${local.fixture[count.index].columnB}",
-#   "columnC":"${local.fixture[count.index].columnC}",
-#   "columnD":"${local.fixture[count.index].columnD}",
-#   "columnE":"${local.fixture[count.index].columnE}"
-# }
-# ITEM
-# }
+
+resource "aws_dynamodb_table_item" "CodingTask_items" {
+  count = length(local.fixture)
+  table_name = "${module.dynamodb_table.tableName}"
+  hash_key   = "${module.dynamodb_table.hashKey}"
+  range_key  = "${module.dynamodb_table.rangeKey}"
+  item =<<ITEM
+{
+  "${keys(local.fixture[count.index])[0]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[0]]}","${local.fixture[count.index][keys(local.fixture[count.index])[0]]}}",
+  "${keys(local.fixture[count.index])[1]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[1]]}","${local.fixture[count.index][keys(local.fixture[count.index])[1]]}}",
+  "${keys(local.fixture[count.index])[2]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[2]]}","${local.fixture[count.index][keys(local.fixture[count.index])[2]]}}",
+  "${keys(local.fixture[count.index])[3]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[3]]}","${local.fixture[count.index][keys(local.fixture[count.index])[3]]}}",
+  "${keys(local.fixture[count.index])[4]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[4]]}","${local.fixture[count.index][keys(local.fixture[count.index])[4]]}}"
+}
+ITEM
+}
