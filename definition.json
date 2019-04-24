@@ -1,0 +1,33 @@
+{
+  "name": "CodingTask",
+  "index": {
+    "primary": {
+      "key": [
+        {
+          "columnA": "String"
+        }
+      ],
+      "sort": [
+        {
+          "columnB": "Number"
+        }
+      ]
+    },
+    "secondary": {
+      "key": [
+        {
+          "columnA": "String"
+        }
+      ],
+      "sort": [
+        {
+          "columnC": "String"
+        }
+      ],
+      "projection": [
+        "columnD",
+        "columnE"
+      ]
+    }
+  }
+}

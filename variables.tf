@@ -16,3 +16,9 @@ variable "secondarySort" {
 variable "secondaryProjection" {
   default=[]
 }
+
+variable "fixture" {
+  default=""
+}
+
+
