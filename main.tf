@@ -14,7 +14,7 @@ locals {
 }
 
 data "external" "fixture" {
-  program=["python", "fixture.py"]
+  program=["python", "scripts/fixture.py"]
 }
 
 module "dynamodb_table" {
