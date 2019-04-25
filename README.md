@@ -22,6 +22,7 @@ This script will install pyhocon tool, convert input data and run terraform
 
 In case data converted manualy, task can be runned by
 ```
+terraform init
 terraform apply
 ```
 
