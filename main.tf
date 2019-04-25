@@ -1,4 +1,3 @@
-# terraform { backend "local" { path = "state/main.tfstate"} }
 variable "profile" {
   type    = "string"
   default = "default"
@@ -28,29 +27,19 @@ module "dynamodb_table" {
   secondaryProjection="${local.definition.index.secondary.projection}"
 }
 
-output "fixture" {
-  value = "${data.external.fixture.result[keys(local.fixture[0])[0]]}"
-}
-output "temp" {
-  value = "${keys(local.fixture[0])[0]}"
-}
-output "temp1" {
-  value = "${local.fixture[0][keys(local.fixture[0])[0]]}"
+
+data "template_file" "fix" {
+  count = length(local.fixture)
+  template=<<ITEM
+{%{ for key,value in local.fixture[count.index] ~}"${key}":{"${data.external.fixture.result[key]}":"${value}"},%{ endfor }}
+ITEM
 }
 
 
 resource "aws_dynamodb_table_item" "CodingTask_items" {
-  count = length(local.fixture)
+  count = length(data.template_file.fix)
   table_name = "${module.dynamodb_table.tableName}"
   hash_key   = "${module.dynamodb_table.hashKey}"
   range_key  = "${module.dynamodb_table.rangeKey}"
-  item =<<ITEM
-{
-  "${keys(local.fixture[count.index])[0]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[0]]}","${local.fixture[count.index][keys(local.fixture[count.index])[0]]}}",
-  "${keys(local.fixture[count.index])[1]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[1]]}","${local.fixture[count.index][keys(local.fixture[count.index])[1]]}}",
-  "${keys(local.fixture[count.index])[2]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[2]]}","${local.fixture[count.index][keys(local.fixture[count.index])[2]]}}",
-  "${keys(local.fixture[count.index])[3]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[3]]}","${local.fixture[count.index][keys(local.fixture[count.index])[3]]}}",
-  "${keys(local.fixture[count.index])[4]}":{"${data.external.fixture.result[keys(local.fixture[count.index])[4]]}","${local.fixture[count.index][keys(local.fixture[count.index])[4]]}}"
-}
-ITEM
+  item = replace(data.template_file.fix[count.index].rendered, "},}", "}}")
 }
