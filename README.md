@@ -9,7 +9,7 @@ Binary of this version can be downloaded [Here](https://releases.hashicorp.com/t
 Using Terraform, populate a DynamoDB database with specific inputs from a set of files.
 
 ### How to run
-To run this task input data [table definition](#table-definition) and [table fixture](#table-fixture) need to be stored in data folder.
+To run this task input data [table definition](#table-definition) and [table fixture](#table-fixture) should be stored in data folder.
 
 Task can be run by run.sh stored in scripts folder.
 
@@ -20,8 +20,13 @@ Task can be run by run.sh stored in scripts folder.
 
 This script will install pyhocon tool, convert input data and run terraform
 
+In case data converted manualy, task can be runned by
+```
+terraform apply
+```
+
 ### Table definition
-Incoming parameters for Table Definition should be saved into data/definition file
+Incoming parameters for Table Definition should be saved into "data/definition" file
 Table definition should be converted to json. To do this can be used Pyhocon tool
 ```
 pip install pyhocon
