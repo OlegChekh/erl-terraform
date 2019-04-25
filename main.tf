@@ -9,8 +9,8 @@ provider "aws" {
 }
 
 locals {
-  fixture=csvdecode(replace(file("fixture.csv"),", ",","))
-  definition=jsondecode(file("definition.json"))
+  fixture=csvdecode(replace(file("data/fixture.csv"),", ",","))
+  definition=jsondecode(file("data/definition.json"))
 }
 
 data "external" "fixture" {
