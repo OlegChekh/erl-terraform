@@ -7,7 +7,7 @@ import csv
 @terraform_external_data
 def return_data(query):
     output = dict()
-    with open('fixture') as csvfile:
+    with open('data/fixture.csv') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=",", skipinitialspace=True)
         b = reader.next()
         for key in b.keys():
